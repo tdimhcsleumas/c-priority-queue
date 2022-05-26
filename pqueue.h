@@ -5,6 +5,7 @@
 #include <stdlib.h>
 #include <stdint.h>
 #include <string.h>
+#include <stdio.h>
 #include <errno.h>
 
 /* Struct definitions */
@@ -31,11 +32,11 @@ heapify(struct pqueue *pq)
 
 again:
     /* check both the left and right if possible */
-    if (node_left(idx) <= pq->size &&
+    if (node_left(idx) <= pq->size - 1 &&
             heap[node_left(idx)].priority > heap[idx].priority) {
         largest_idx = node_left(idx);
     }
-    if (node_right(idx) <= pq->size &&
+    if (node_right(idx) <= pq->size - 1 &&
             heap[node_right(idx)].priority > heap[largest_idx].priority) {
         largest_idx = node_right(idx);
     }
@@ -62,7 +63,7 @@ pqueue_create(size_t capacity)
 
     // an additional space is used for moving things
     alloc_size = sizeof(struct pqueue) +
-        (capacity + 1) * sizeof(struct pqueue_entry);
+        (capacity) * sizeof(struct pqueue_entry);
     pqueue = (struct pqueue *)malloc(alloc_size);
 
     if (!pqueue)
@@ -91,6 +92,7 @@ pqueue_insert(struct pqueue *pq, void *value, int64_t priority)
 
     pq->heap[0].priority = priority;
     pq->heap[0].value = value;
+
     pq->size++;
 
     heapify(pq);
@@ -107,19 +109,20 @@ pqueue_pop(struct pqueue *pq)
 
     /* check if the queue is empty */
     if (pq->size == 0) {
+        puts("empty queue!");
         return NULL;
     }
 
     value = pq->heap[0].value;
 
     /* delete the value from the heap */
-    memmove(pq->heap, pq->heap + 1, pq->size *
+    memmove(pq->heap, pq->heap + 1, (pq->size - 1) *
             sizeof(struct pqueue_entry));
 
     /* fix the heap */
     heapify(pq);
 
-    pq->size--;
+    --pq->size;
 
     return value;
 }

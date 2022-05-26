@@ -10,7 +10,7 @@ int main(void)
     struct pqueue *queue = NULL;
     uint64_t size = 5, *temp = 0;
     uint64_t test_values[] = {1, 2, 3, 4, 5};
-    uint64_t test_priorities[] = {5, 4, 3, 2, 1};
+    int64_t test_priorities[] = {-5, 4, 3, -12, 1};
 
     puts("testing pqueue");
     
